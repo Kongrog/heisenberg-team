@@ -9,12 +9,39 @@
 
 ---
 
+## Table of Contents
+
+- [What is this?](#what-is-this)
+- [Why?](#why)
+- [How is this different?](#how-is-this-different)
+- [Architecture](#architecture)
+- [Agents](#agents)
+- [Quick Start](#quick-start)
+- [Skills (34)](#skills-34)
+- [Project Structure](#project-structure)
+- [Examples](#examples)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
 ## Requirements
 
 - [Node.js](https://nodejs.org/) v18+
 - [OpenClaw](https://github.com/openclaw/openclaw) (`npm install -g openclaw`)
 - API key for at least one LLM provider (Anthropic, OpenAI, Google)
 - Telegram bot token (optional, for notifications via [@BotFather](https://t.me/BotFather))
+
+### System Requirements
+
+| | Minimum | Recommended |
+|---|---------|-------------|
+| RAM | 2 GB | 4 GB (8 agents) |
+| Disk | 500 MB | 2 GB (with logs/memory) |
+| OS | macOS 11+, Ubuntu 20.04+, Windows 11 (WSL2) | macOS 13+ or Ubuntu 22.04+ |
+| Node.js | 18.x | 20.x+ |
+| Network | Required (LLM API calls) | Broadband |
 
 ## What is this?
 
@@ -30,23 +57,71 @@ This is not a framework. This is a **working system** you can clone, configure, 
 - **Self-healing.** Health checks, watchdogs, automatic session cleanup. The system monitors itself.
 - **Your data stays yours.** All personal data uses `{{PLACEHOLDER}}` format. Setup wizard fills them in 5 minutes.
 
+## How is this different?
+
+| Feature | Heisenberg Team | AutoGPT | CrewAI | MetaGPT |
+|---------|----------------|---------|--------|---------|
+| Setup | 5-min wizard | Manual YAML | Python code | Python code |
+| Crash recovery | File-based board survives restarts | In-memory, lost on crash | In-memory | In-memory |
+| Agent coordination | Board-First protocol + sessions_send | Shared memory | Sequential/hierarchical | SOP-based |
+| Self-healing | Built-in (cron-based) | No | No | No |
+| Skills library | 34 ready-to-use | Plugin ecosystem | Build your own | Build your own |
+| Personality | Persistent SOUL.md per agent | Generic | Role description | Role description |
+| Memory | SQLite + vector search + file-based | Vector DB | Short-term only | Shared memory |
+| Monitoring | Heartbeat + health checks | Logs only | Logs only | Logs only |
+| Multi-platform | macOS + Linux + WSL | Docker | Python | Python |
+
 ## Architecture
 
+```mermaid
+graph TB
+    User["👤 You (Telegram)"]
+    
+    subgraph team["🧪 Heisenberg Team"]
+        HB["🧪 Heisenberg<br/>Boss & Coordinator<br/><i>Opus</i>"]
+        
+        subgraph specialists["Specialists"]
+            Saul["💼 Saul Goodman<br/>Producer<br/><i>Sonnet</i>"]
+            Walter["👨‍🔬 Walter White<br/>Tech Lead<br/><i>Sonnet</i>"]
+            Jesse["🎯 Jesse Pinkman<br/>Marketing<br/><i>Sonnet</i>"]
+            Skyler["💰 Skyler White<br/>Finance<br/><i>Sonnet</i>"]
+            Hank["🔫 Hank Schrader<br/>Security<br/><i>Sonnet</i>"]
+            Gus["🎯 Gus Fring<br/>Kaizen/Goals<br/><i>Sonnet</i>"]
+            Twins["👥 Salamanca Twins<br/>Research<br/><i>Sonnet</i>"]
+        end
+        
+        Board["📋 Team Board<br/><i>File-based state</i>"]
+        Memory["🧠 Memory<br/><i>SQLite + Vectors</i>"]
+        Skills["⚡ 34 Skills<br/><i>PDF, XLSX, Research...</i>"]
+    end
+    
+    User -->|"message"| HB
+    HB -->|"sessions_send"| Saul
+    HB -->|"sessions_send"| Walter
+    HB -->|"sessions_send"| Jesse
+    HB -->|"sessions_send"| Skyler
+    HB -->|"sessions_send"| Hank
+    HB -->|"sessions_send"| Gus
+    HB -->|"sessions_send"| Twins
+    Saul -->|"coordinate"| Board
+    Walter --> Skills
+    Jesse --> Skills
+    Skyler --> Skills
+    HB --> Memory
+    Saul --> Memory
+    
+    style HB fill:#ff6b35,stroke:#333,color:#fff
+    style Saul fill:#4ecdc4,stroke:#333,color:#fff
+    style Walter fill:#45b7d1,stroke:#333,color:#fff
+    style Jesse fill:#96ceb4,stroke:#333,color:#fff
+    style Skyler fill:#dda0dd,stroke:#333,color:#fff
+    style Hank fill:#ff6b6b,stroke:#333,color:#fff
+    style Gus fill:#ffd93d,stroke:#333,color:#000
+    style Twins fill:#6c5ce7,stroke:#333,color:#fff
+    style Board fill:#2d3436,stroke:#333,color:#fff
+    style Memory fill:#2d3436,stroke:#333,color:#fff
+    style Skills fill:#2d3436,stroke:#333,color:#fff
 ```
-User ←→ Heisenberg (Main Agent)
-              │
-              ├── Saul (Coordinator) ──→ Manages pipeline, assigns tasks
-              │     │
-              │     ├── Walter (Team Lead) ──→ Code, PDFs, skills, production
-              │     ├── Jesse (Marketing) ──→ Funnels, analytics, campaigns
-              │     ├── Skyler (Admin) ──→ Documents, finance, contracts
-              │     ├── Hank (Security) ──→ Audits, monitoring, QA
-              │     ├── Gus (Kaizen) ──→ Crons, optimization, self-healing
-              │     └── Twins (Research) ──→ Deep research, competitor analysis
-              │
-              └── 34 Skills (shared toolkit)
-```
-
 ## Agents
 
 | Agent | Character | Role | Key Skills |

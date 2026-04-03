@@ -5,6 +5,12 @@
 
 set -e
 
+if [[ "$OSTYPE" != "darwin"* ]]; then
+  echo "⚠️  This script requires macOS (uses osascript for UI automation)"
+  echo "On Linux/WSL, check Claude usage at: https://console.anthropic.com/usage"
+  exit 0
+fi
+
 # 1. Активировать Comet (там открыта вкладка claude.ai/settings/usage)
 osascript -e 'tell application "Comet" to activate' 2>/dev/null
 
