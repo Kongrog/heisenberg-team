@@ -1,7 +1,9 @@
 # Конституция команды "Во все тяжкие" 🧪
 
 > Единственный источник правды. Все агенты читают при старте.
-> Последнее обновление: 2026-04-01
+> Последнее обновление: 2026-04-08
+
+Durable memory rules: `references/durable-memory-protocol.md`
 
 ---
 
@@ -191,6 +193,21 @@ message(action=send, channel=telegram, to={{OWNER_TELEGRAM_ID}}, message="Гот
 Шаблон: `references/briefing-template.md`. Копировать в `projects/НАЗВАНИЕ/briefing.md` и заполнить.
 
 Обязательные поля: Задача, Требования, Путь результата. Остальное — по необходимости.
+
+### 6.2 Durable Memory Protocol
+
+Важные знания о пользователе, команде и системе не должны жить только в raw `sessions`.
+
+Правила:
+- `sessions` и transcript-ы считать вспомогательным, шумным слоем
+- если знание должно быть полезно через 4-10+ месяцев, закреплять его в `memory/core/`, `memory/decisions/` или `memory/projects/`
+- подтверждённые факты писать в `memory/core/facts_user.md`
+- подтверждённые предпочтения писать в `memory/core/preferences_user.md`
+- долгие важные изменения писать в `memory/core/changes_system.md`
+- не писать туда tool traces, `NO_REPLY`, process names, разовую отладку и непроверенные догадки
+- агент не должен ждать напоминания пользователя: если факт подтверждён и явно долгоживущий, его нужно закрепить самому
+
+`memory/core/` и `memory/decisions/` - главный source of truth для долговременной памяти команды.
 
 ---
 
@@ -720,3 +737,11 @@ General principle: when context gets heavy, delegate to subagents rather than do
 | Background tasks | Sonnet |
 
 **Why full model ID for crons?** Aliases may not resolve correctly in scheduled contexts. Always use the full provider/model path.
+
+
+### 16.8 OpenClaw 2026.4.8 ops
+
+- Для быстрых проверок моделей, транскрибации, web/media inference и совместимости провайдеров использовать `openclaw infer`, а не кустарные прямые вызовы API.
+- Для структурирования долгой памяти и знаний команды можно использовать wiki-подход поверх файловой памяти.
+- Heartbeat runtime можно оставлять включённым без раздувания system prompt, если heartbeat уже настроен на уровне runtime.
+- После тяжёлой compaction сначала смотреть checkpoint/restore в Sessions UI, а уже потом паниковать или делать `/new`.

@@ -107,3 +107,34 @@ Yes. Saul (coordinator) can assign tasks to multiple agents simultaneously. Each
 | `MEMORY.md` | Persistent knowledge and context |
 | `BOOTSTRAP.md` | Recovery instructions after restart |
 | `HEARTBEAT.md` | Periodic/scheduled tasks |
+
+## OpenAI / Codex
+
+### Can I use OpenAI Codex login instead of a normal API key?
+Yes, if your OpenClaw build supports the `openai-codex` provider. Check available providers first:
+```bash
+openclaw models list
+```
+If `openai-codex` is available, authenticate that provider and select a model from the `openai-codex/...` family.
+
+### Why does OpenClaw say `No API key found for provider "openai-codex"`?
+Usually the model was switched, but the agent or workspace was not authenticated for that provider. Re-check auth and provider availability:
+```bash
+openclaw models list
+openclaw status
+```
+
+### Does ChatGPT Plus automatically cover OpenAI API usage?
+No. Standard OpenAI API billing is separate. If you want subscription-style auth, use the provider and login flow that your OpenClaw build exposes, such as `openai-codex`, not plain `openai`, when supported.
+
+## Sandboxing / access
+
+### Why can an agent not SSH into my server or access a project outside the workspace?
+Usually this is not a server problem. It is the agent sandbox or permission policy. Safe default behavior is to work inside the current workspace and with limited network access.
+
+Practical fix:
+1. clone or copy the target project into the agent workspace
+2. do the edits locally
+3. deploy separately with the permissions you control
+
+If you need direct server access, run the agent in an environment that explicitly allows it.

@@ -2,6 +2,8 @@
 
 **A multi-agent system with 8 AI agents working as a team.** Built on [OpenClaw](https://github.com/openclaw/openclaw). Inspired by Breaking Bad.
 
+Release 2 adds better direct-message behavior, durable-memory rules, and updated OpenClaw operations.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![OpenClaw](https://img.shields.io/badge/Built%20with-OpenClaw-blue)](https://github.com/openclaw/openclaw)
 [![Agents](https://img.shields.io/badge/Agents-8-green)]()
@@ -30,7 +32,7 @@
 
 - [Node.js](https://nodejs.org/) v18+
 - [OpenClaw](https://github.com/openclaw/openclaw) (`npm install -g openclaw`)
-- API key for at least one LLM provider (Anthropic, OpenAI, Google, DeepSeek)
+- Auth for at least one LLM provider (Anthropic, OpenAI, OpenAI Codex, Google, DeepSeek, or local models)
 - Telegram bot token (optional, for notifications via [@BotFather](https://t.me/BotFather))
 
 ### System Requirements
